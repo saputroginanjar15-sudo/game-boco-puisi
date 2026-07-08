@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Kata: Misteri Puisi Kelas 8</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #game-container {
+            background-color: #34495e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #f1c40f;
+            font-size: 24px;
+        }
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        #score-display {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div id="start-screen">
+        <h1>📜 Petualangan Kata: Misteri Puisi</h1>
+        <p>Selamat datang di akademi penyair! Jawab tantangan ini untuk membuktikan pemahamanmu tentang unsur dan makna puisi.</p>
+        <button class="btn" onclick="startGame()">Mulai Petualangan</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <h1 id="level-title">Level 1</h1>
+        <p class="question-text" id="question-text">Pertanyaan akan muncul di sini</p>
+        <div id="options-container">
+            <!-- Tombol pilihan akan muncul di sini -->
+        </div>
+        <p id="feedback" style="font-weight: bold; margin-top: 15px;"></p>
+    </div>
+
+    <div id="end-screen" class="hidden">
+        <h1>🎉 Misi Selesai!</h1>
+        <p class="question-text" id="final-score">Skor akhirmu: </p>
+        <p id="evaluation-text"></p>
+        <button class="btn" onclick="location.reload()">Main Lagi</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            level: "Level 1: Unsur Intrinsik",
+            question: "Pilihan kata yang tepat, selaras, dan memiliki makna khusus yang digunakan penyair dalam puisinya disebut...",
+            options: ["A. Imaji", "B. Majas", "C. Diksi", "D. Rima"],
+            answer: 2 // Index jawaban benar (C. Diksi)
+        },
+        {
+            level: "Level 2: Imaji (Pengindraan)",
+            question: "Perhatikan baris puisi berikut:\n'Suara seruling bambu mengalun merdu memecah sunyi'\nBaris puisi tersebut menggunakan imaji...",
+            options: ["A. Penglihatan", "B. Pendengaran", "C. Penciuman", "D. Perabaan"],
+            answer: 1 // Index jawaban benar (B. Pendengaran)
+        },
+        {
+            level: "Level 3: Gaya Bahasa (Majas)",
+            question: "Majas personifikasi (mengumpamakan benda mati seolah hidup seperti manusia) terdapat pada baris puisi...",
+            options: [
+                "A. Wajahnya bersinar bagai rembulan", 
+                "B. Suaranya menggelegar membelah angkasa", 
+                "C. Angin malam berbisik pelan di telingaku", 
+                "D. Dia adalah tulang punggung keluarga"
+            ],
+            answer: 2 // Index jawaban benar (C)
+        },
+        {
+            level: "Level 4: Makna Puisi",
+            question: "Apa makna dari baris puisi: 'Walau badai menerjang, karang tetap berdiri tegar'?",
+            options: [
+                "A. Orang yang sedang bermain di pantai",
+                "B. Karang yang keras tidak bisa hancur",
+                "C. Keteguhan hati menghadapi cobaan berat",
+                "D. Bahaya badai yang ada di lautan"
+            ],
+            answer: 2 // Index jawaban benar (C)
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function startGame() {
+        document.getElementById("start-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        document.getElementById("feedback").innerText = "";
+        let q = questions[currentQuestionIndex];
+        document.getElementById("level-title").innerText = q.level;
+        document.getElementById("question-text").innerText = q.question;
+        
+        let optionsHtml = "";
+        for(let i=0; i<q.options.length; i++) {
+            optionsHtml += `<button class="btn" onclick="checkAnswer(${i})">${q.options[i]}</button>`;
+        }
+        document.getElementById("options-container").innerHTML = optionsHtml;
+    }
+
+    function checkAnswer(selectedIndex) {
+        let q = questions[currentQuestionIndex];
+        let optionsButtons = document.querySelectorAll("#options-container .btn");
+        
+        // Disable semua tombol agar tidak bisa diklik dua kali
+        optionsButtons.forEach(btn => btn.disabled = true);
+
+        if(selectedIndex === q.answer) {
+            score += 25;
+            document.getElementById("feedback").style.color = "#2ecc71";
+            document.getElementById("feedback").innerText = "Jawaban Benar! ✨";
+        } else {
+            document.getElementById("feedback").style.color = "#e74c3c";
+            document.getElementById("feedback").innerText = "Jawaban Salah! ❌ Jawaban yang benar adalah: " + q.options[q.answer];
+        }
+
+        setTimeout(() => {
+            currentQuestionIndex++;
+            if(currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                endGame();
+            }
+        }, 2000); // Jeda 2 detik sebelum lanjut
+    }
+
+    function endGame() {
+        document.getElementById("quiz-screen").classList.add("hidden");
+        document.getElementById("end-screen").classList.remove("hidden");
+        document.getElementById("final-score").innerText = "Skor akhirmu: " + score + " / 100";
+        
+        let evalText = "";
+        if(score === 100) evalText = "Sempurna! Kamu adalah seorang Maestro Puisi!";
+        else if(score >= 50) evalText = "Bagus! Pemahamanmu tentang puisi sudah cukup baik.";
+        else evalText = "Jangan menyerah! Ayo pelajari lagi unsur-unsur puisi.";
+        
+        document.getElementById("evaluation-text").innerText = evalText;
+    }
+</script>
+
+</body>
+</html>
